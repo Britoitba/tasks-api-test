@@ -87,4 +87,26 @@ public class ApiTests {
                 .body("message", Matchers.is("Due date must not be in past"))
         ;
     }
+
+    @Test
+    public void shouldDeleteTask(){
+        Integer idTask = RestAssured.given()
+                .contentType("application/json")
+                .accept("application/json")
+                .body("{\"task\":\""+ description +"\",\"dueDate\":\""+ date +"\"}")
+                .when()
+                .post("/todo")
+                .then()
+                .statusCode(201)
+                .body("id", Matchers.notNullValue())
+                .body("task", Matchers.is(description))
+                .extract().path("id")
+        ;
+        RestAssured.given()
+                .when()
+                .delete("/todo/" + idTask)
+                .then()
+                .statusCode(204)
+        ;
+    }
 }
